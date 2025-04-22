@@ -25,7 +25,10 @@ from ldm.util import instantiate_from_config
 import socket
 from pytorch_lightning.plugins.environments import ClusterEnvironment, SLURMEnvironment
 
+# -->>
 from arguments import get_parser
+from argparse_ext import TrainerExt
+# <<--
 
 
 def nondefault_trainer_args(opt):
@@ -331,7 +334,7 @@ if __name__ == "__main__":
     sys.path.append(os.getcwd())
 
     parser = get_parser()
-    parser = Trainer.add_argparse_args(parser)
+    parser = TrainerExt.add_argparse_args(parser)
 
     opt, unknown = parser.parse_known_args()
     if opt.name and opt.resume:

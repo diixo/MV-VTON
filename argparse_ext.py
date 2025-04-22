@@ -287,3 +287,15 @@ def _int_or_float_type(x) -> Union[int, float]:
     if "." in str(x):
         return float(x)
     return int(x)
+
+
+
+###############################################################################################
+
+from pytorch_lightning import Trainer
+from argparse import ArgumentParser
+
+class TrainerExt(Trainer):
+    @classmethod
+    def add_argparse_args(cls, parser: ArgumentParser, **kwargs) -> ArgumentParser:
+        return add_argparse_args(cls, parser, kwargs)
