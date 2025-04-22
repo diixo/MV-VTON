@@ -357,4 +357,4 @@ from argparse import ArgumentParser
 class TrainerExt(Trainer):
     @classmethod
     def add_argparse_args(cls, parser: ArgumentParser, **kwargs) -> ArgumentParser:
-        return add_argparse_args(cls, parser, kwargs)
+        return add_argparse_args(cls, parser, **kwargs)
