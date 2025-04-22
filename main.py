@@ -15,129 +15,17 @@ from PIL import Image
 from pytorch_lightning import seed_everything
 from pytorch_lightning.trainer import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint, Callback, LearningRateMonitor
-from pytorch_lightning.utilities.distributed import rank_zero_only
-from pytorch_lightning.utilities import rank_zero_info
+
+#from pytorch_lightning.utilities.distributed import rank_zero_only
+from pytorch_lightning.utilities import rank_zero_info, rank_zero_only
+
 
 from ldm.data.base import Txt2ImgIterableBaseDataset
 from ldm.util import instantiate_from_config
 import socket
 from pytorch_lightning.plugins.environments import ClusterEnvironment, SLURMEnvironment
 
-
-def get_parser(**parser_kwargs):
-    def str2bool(v):
-        if isinstance(v, bool):
-            return v
-        if v.lower() in ("yes", "true", "t", "y", "1"):
-            return True
-        elif v.lower() in ("no", "false", "f", "n", "0"):
-            return False
-        else:
-            raise argparse.ArgumentTypeError("Boolean value expected.")
-
-    parser = argparse.ArgumentParser(**parser_kwargs)
-    parser.add_argument(
-        "-n",
-        "--name",
-        type=str,
-        const=True,
-        default="",
-        nargs="?",
-        help="postfix for logdir",
-    )
-    parser.add_argument(
-        "-r",
-        "--resume",
-        type=str,
-        const=True,
-        default="",
-        nargs="?",
-        help="resume from logdir or checkpoint in logdir",
-    )
-    parser.add_argument(
-        "-b",
-        "--base",
-        nargs="*",
-        metavar="base_config.yaml",
-        help="paths to base configs. Loaded from left-to-right. "
-             "Parameters can be overwritten or added with command-line options of the form `--key value`.",
-        default=["configs/stable-diffusion/v1-inference-inpaint.yaml"],
-    )
-    parser.add_argument(
-        "-t",
-        "--train",
-        type=str2bool,
-        const=True,
-        default=True,
-        nargs="?",
-        help="train",
-    )
-    parser.add_argument(
-        "--no-test",
-        type=str2bool,
-        const=True,
-        default=False,
-        nargs="?",
-        help="disable test",
-    )
-    parser.add_argument(
-        "-p",
-        "--project",
-        help="name of new or path to existing project"
-    )
-    parser.add_argument(
-        "-d",
-        "--debug",
-        type=str2bool,
-        nargs="?",
-        const=True,
-        default=False,
-        help="enable post-mortem debugging",
-    )
-    parser.add_argument(
-        "-s",
-        "--seed",
-        type=int,
-        default=23,
-        help="seed for seed_everything",
-    )
-    parser.add_argument(
-        "-f",
-        "--postfix",
-        type=str,
-        default="",
-        help="post-postfix for default name",
-    )
-    parser.add_argument(
-        "-l",
-        "--logdir",
-        type=str,
-        default="logs",
-        help="directory for logging dat shit",
-    )
-    parser.add_argument(
-        "--pretrained_model",
-        type=str,
-        default="",
-        help="path to pretrained model",
-    )
-    parser.add_argument(
-        "--scale_lr",
-        type=str2bool,
-        nargs="?",
-        const=True,
-        default=True,
-        help="scale base-lr by ngpu * batch_size * n_accumulate",
-    )
-    parser.add_argument(
-        "--train_from_scratch",
-        type=str2bool,
-        nargs="?",
-        const=True,
-        default=False,
-        help="Train from scratch",
-    )
-    return parser
+from arguments import get_parser
 
 
 def nondefault_trainer_args(opt):
@@ -266,11 +154,11 @@ class SetupCallback(Callback):
         self.lightning_config = lightning_config
 
     def on_keyboard_interrupt(self, trainer, pl_module):
+        from lora.lora import save_lora_weight
         if trainer.global_rank == 0:
             print("Summoning checkpoint.")
             if hasattr(self.config, 'lora_config'):
                 ckpt_path = os.path.join(self.ckptdir, "lora_last.ckpt")
-                from lora.lora import save_lora_weight
                 save_lora_weight(trainer.model, path=ckpt_path)
             else:
                 ckpt_path = os.path.join(self.ckptdir, "last.ckpt")
@@ -535,9 +423,9 @@ if __name__ == "__main__":
             param.requires_grad = True
         if "local_controlnet" in name or "pose" in name: 
             param.requires_grad = True
-        # 打开一个文件来写入模块名称
+        # Open a file to write the module name
     with open("module_names.txt", "w") as file:
-        # 遍历模型的所有模块并将名称写入文件
+        # Iterate over all modules of the model and write their names to a file
         for name, param in model.named_parameters():
             if param.requires_grad == True:
                 file.write(name + "\n")
