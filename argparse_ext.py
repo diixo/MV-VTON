@@ -17,7 +17,66 @@ from argparse import _ArgumentGroup, ArgumentParser, Namespace
 from contextlib import suppress
 from typing import Any, Dict, List, Tuple, Union
 
-from pytorch_lightning.utilities.parsing import str_to_bool, str_to_bool_or_int, str_to_bool_or_str
+
+# get from pytorch_lightning.utilities.parsing import str_to_bool, str_to_bool_or_int, str_to_bool_or_str
+
+def str_to_bool_or_str(val: str) -> Union[str, bool]:
+    """Possibly convert a string representation of truth to bool.
+    Returns the input otherwise.
+    Based on the python implementation distutils.utils.strtobool
+
+    True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
+    are 'n', 'no', 'f', 'false', 'off', and '0'.
+    """
+    lower = val.lower()
+    if lower in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    if lower in ("n", "no", "f", "false", "off", "0"):
+        return False
+    return val
+
+
+def str_to_bool(val: str) -> bool:
+    """Convert a string representation of truth to bool.
+
+    True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
+    are 'n', 'no', 'f', 'false', 'off', and '0'.
+
+    Raises:
+        ValueError:
+            If ``val`` isn't in one of the aforementioned true or false values.
+
+    >>> str_to_bool('YES')
+    True
+    >>> str_to_bool('FALSE')
+    False
+    """
+    val_converted = str_to_bool_or_str(val)
+    if isinstance(val_converted, bool):
+        return val_converted
+    raise ValueError(f"invalid truth value {val_converted}")
+
+
+def str_to_bool_or_int(val: str) -> Union[bool, int, str]:
+    """Convert a string representation to truth of bool if possible, or otherwise try to convert it to an int.
+
+    >>> str_to_bool_or_int("FALSE")
+    False
+    >>> str_to_bool_or_int("1")
+    True
+    >>> str_to_bool_or_int("2")
+    2
+    >>> str_to_bool_or_int("abc")
+    'abc'
+    """
+    val_converted = str_to_bool_or_str(val)
+    if isinstance(val_converted, bool):
+        return val_converted
+    try:
+        return int(val_converted)
+    except ValueError:
+        return val_converted
+
 
 
 def from_argparse_args(cls, args: Union[Namespace, ArgumentParser], **kwargs):
