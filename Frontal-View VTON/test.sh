@@ -2,7 +2,7 @@
  --ddim_steps 50 \
  --outdir results/try\
  --config configs/viton512.yaml \
- --dataroot /mnt/pfs-mc0p4k/cvg/team/didonglin/why/datasets/VITON-HD \
+ --dataroot /VITON-HD \
  --ckpt checkpoints/viton-hd.ckpt \
  --n_samples 2 \
  --seed 23 \

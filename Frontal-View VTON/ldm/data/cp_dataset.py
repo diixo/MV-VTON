@@ -333,7 +333,7 @@ def pre_alignment(c, cm, parse_roi):
 
 
 if __name__ == '__main__':
-    dataset = CPDataset('/data/user/gjh/VITON-HD', 512, mode='train', unpaired=False)
+    dataset = CPDataset('/VITON-HD', 512, mode='train', unpaired=False)
     loader = DataLoader(dataset, batch_size=4, shuffle=False, num_workers=4)
     for data in loader:
         pass
