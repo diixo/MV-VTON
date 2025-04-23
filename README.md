@@ -147,7 +147,7 @@ We compute `LPIPS`, `SSIM`, `FID`, `KID` using the same tools in [LaDI-VTON](htt
 
 #### MVG
 
-We use Paint-by-Example as initialization, please download the pretrained model
+We use Paint-by-Example as initialization, please download the pretrained **model.ckpt** (4.9Gb)
 from [Google Drive](https://drive.google.com/file/d/15QzaTWsvZonJcXsNv-ilMRCYaQLhzR_i/view) and save the model to
 directory `checkpoints`. Rename `cp_dataset_mv_paired.py` to `cp_dataset.py`, then run:
 
