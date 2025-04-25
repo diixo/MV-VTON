@@ -15,13 +15,14 @@ from PIL import Image
 from pytorch_lightning import seed_everything
 from pytorch_lightning.trainer import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint, Callback, LearningRateMonitor
-from pytorch_lightning.utilities.distributed import rank_zero_only
-from pytorch_lightning.utilities import rank_zero_info
+from pytorch_lightning.utilities import rank_zero_only, rank_zero_info
 
 from ldm.data.base import Txt2ImgIterableBaseDataset
 from ldm.util import instantiate_from_config
 import socket
 from pytorch_lightning.plugins.environments import ClusterEnvironment, SLURMEnvironment
+
+from argparse_ext import TrainerExt
 
 
 def get_parser(**parser_kwargs):
@@ -443,7 +444,7 @@ if __name__ == "__main__":
     sys.path.append(os.getcwd())
 
     parser = get_parser()
-    parser = Trainer.add_argparse_args(parser)
+    parser = TrainerExt.add_argparse_args(parser)
 
     opt, unknown = parser.parse_known_args()
     if opt.name and opt.resume:
