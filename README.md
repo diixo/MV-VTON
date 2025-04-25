@@ -168,10 +168,10 @@ sh train.sh
 
 Our code is heavily borrowed from:
 * [Paint-by-Example](https://github.com/Fantasy-Studio/Paint-by-Example) - image editing diffusion models
-* [DCI-VTON](https://github.com/bcmi/DCI-VTON-Virtual-Try-On) - based on PF-AFN + Paint-by-Example
+* [DCI-VTON](https://github.com/bcmi/DCI-VTON-Virtual-Try-On) - Diffusion models for HQ (VGG), based on PF-AFN + Paint-by-Example
 
 We also thank previous work:
-* [PF-AFN](https://github.com/geyuying/PF-AFN) - vgg19 using
+* [PF-AFN](https://github.com/geyuying/PF-AFN) - simple vgg19 using
 * [GP-VTON](https://github.com/xiezhy6/GP-VTON) - based on PF-AFN
 * [LaDI-VTON](https://github.com/miccunifi/ladi-vton)
 * [StableVITON](https://github.com/rlawjdghek/StableVITON)
